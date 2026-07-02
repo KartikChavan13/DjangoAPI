@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student CRUD</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            width:700px;
+            margin:30px auto;
+        }
+
+        input{
+            padding:8px;
+            margin:5px;
+        }
+
+        button{
+            padding:8px 15px;
+            cursor:pointer;
+        }
+
+        table{
+            width:100%;
+            margin-top:20px;
+            border-collapse:collapse;
+        }
+
+        table,th,td{
+            border:1px solid black;
+        }
+
+        th,td{
+            padding:10px;
+            text-align:center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h2>Student CRUD</h2>
+
+<input type="hidden" id="studentId">
+
+<input type="text" id="name" placeholder="Name">
+<input type="email" id="email" placeholder="Email">
+
+<input type="number" id="age" placeholder="Age">
+
+<button onclick="saveStudent()">Save</button>
+
+<table>
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+    <th>Email</th>
+<th>Age</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="studentTable"></tbody>
+
+</table>
+
+<script>
+
+const API="http://127.0.0.1:8000/api/students/";
+
+loadStudents();
+
+function loadStudents(){
+
+fetch(API)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+let rows="";
+
+data.forEach(student=>{
+
+rows+=`
+
+<tr>
+
+<td>${student.id}</td>
+
+<td>${student.name}</td>
+<td>${student.email}</td>
+<td>${student.age}</td>
+
+<td>
+
+<button onclick="editStudent(${student.id}, '${student.name}', '${student.email}', ${student.age})">
+
+Edit
+
+</button>
+
+<button onclick="deleteStudent(${student.id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("studentTable").innerHTML=rows;
+
+});
+
+}
+
+function saveStudent(){
+
+const id=document.getElementById("studentId").value;
+
+const student={
+
+name:document.getElementById("name").value,
+   email: document.getElementById("email").value,
+age:document.getElementById("age").value
+
+};
+
+if(id==""){
+
+fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(student)
+
+})
+
+.then(()=>{
+
+clearForm();
+
+loadStudents();
+
+});
+
+}
+
+else{
+
+fetch(API+id+"/",{
+
+method:"PUT",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(student)
+
+})
+
+.then(()=>{
+
+clearForm();
+
+loadStudents();
+
+});
+
+}
+
+}
+
+function editStudent(id, name, email, age) {
+
+    document.getElementById("studentId").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("email").value = email;
+    document.getElementById("age").value = age;
+}
+
+function deleteStudent(id){
+
+if(confirm("Delete Student?")){
+
+fetch(API+id+"/",{
+
+method:"DELETE"
+
+})
+
+.then(()=>loadStudents());
+
+}
+
+}
+
+function clearForm(){
+
+document.getElementById("studentId").value="";
+
+document.getElementById("name").value="";
+    document.getElementById("email").value="";
+document.getElementById("age").value="";
+
+}
+
+</script>
+
+</body>
+
+</html>

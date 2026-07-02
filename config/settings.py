@@ -59,6 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
+          'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,7 +124,8 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ALLOWED_HOSTS = [
-    "djangoapi-f17z.onrender.com",
+    "*",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+# djangoapi-f17z.onrender.com
