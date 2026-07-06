@@ -6,6 +6,9 @@ from .models import Student
 from .serializers import StudentSerializer
 from django.shortcuts import render
 
+from django.core.mail import send_mail
+from django.http import HttpResponse
+
 def home(request):
     return render(request, 'index.html')
 
@@ -55,3 +58,30 @@ def student_detail(request, id):
             {"message": "Student deleted successfully"},
             status=status.HTTP_204_NO_CONTENT
         )
+
+@api_view(["POST"])
+def send_email(request):
+
+    email = request.data.get("email")
+
+    if not email:
+        return Response(
+            {"success": False, "message": "Email is required"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    send_mail(
+        subject="Welcome",
+        message="Hello! Welcome to Django.",
+        from_email=None,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+    return Response(
+        {
+            "success": True,
+            "message": "Email sent successfully"
+        },
+        status=status.HTTP_200_OK
+    )

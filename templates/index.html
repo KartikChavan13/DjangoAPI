@@ -175,6 +175,16 @@ td:nth-child(5):before{
 </head>
 
 <body>
+
+     <input type="email" id="mail" placeholder="Enter Email">
+
+<button id="sendBtn" type="button" onclick="sendEmail()">
+    Send Email
+</button>
+
+<p id="msg"></p>
+
+
 <div class="container">
 <h2>Student CRUD</h2>
 <input type="hidden" id="studentId">
@@ -208,6 +218,9 @@ td:nth-child(5):before{
 
 </table>
 </div>
+
+
+
 <script>
 
 const API="https://djangoapi-f17z.onrender.com/api/students/";
@@ -361,6 +374,55 @@ document.getElementById("name").value="";
 document.getElementById("age").value="";
 
 }
+
+function sendEmail() {
+  const email = document.getElementById("mail").value;
+  const btn = document.getElementById("sendBtn");
+  const msg = document.getElementById("msg");
+
+
+    if(email === ""){
+        msg.innerHTML = "Please enter an email.";
+        msg.style.color = "red";
+        return;
+    }
+     // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = "Loading...";
+    msg.innerHTML = "";
+
+  fetch("/api/send-email/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        msg.innerHTML = data.message;
+        msg.style.color = "green";
+
+    })
+    .catch(error => {
+
+        msg.innerHTML = "Failed to send email.";
+        msg.style.color = "red";
+
+    })
+    .finally(() => {
+
+        // Restore button
+        btn.disabled = false;
+        btn.innerHTML = "Send Email";
+
+    });
+}
+ 
+
 
 </script>
 
