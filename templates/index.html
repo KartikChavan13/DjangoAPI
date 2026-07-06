@@ -391,7 +391,7 @@ function sendEmail() {
     btn.innerHTML = "Loading...";
     msg.innerHTML = "";
 
-  fetch("https://djangoapi-f17z.onrender.com/api/send-email/", {
+  fetch("/api/send-email/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
