@@ -124,7 +124,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ALLOWED_HOSTS = [
-    "*",
+    "djangoapi-f17z.onrender.com",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
