@@ -61,27 +61,32 @@ def student_detail(request, id):
 
 @api_view(["POST"])
 def send_email(request):
+    try:
+        email = request.data.get("email")
 
-    email = request.data.get("email")
+        if not email:
+            return Response(
+                {"message": "Email is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    if not email:
-        return Response(
-            {"success": False, "message": "Email is required"},
-            status=status.HTTP_400_BAD_REQUEST
+        send_mail(
+            subject="Welcome",
+            message="Hello! Welcome to Django.",
+            from_email=None,
+            recipient_list=[email],
+            fail_silently=False,
         )
 
-    send_mail(
-        subject="Welcome",
-        message="Hello! Welcome to Django.",
-        from_email=None,
-        recipient_list=[email],
-        fail_silently=False,
-    )
+        return Response(
+            {"message": "Email sent successfully"},
+            status=status.HTTP_200_OK
+        )
 
-    return Response(
-        {
-            "success": True,
-            "message": "Email sent successfully"
-        },
-        status=status.HTTP_200_OK
-    )
+    except Exception as e:
+        return Response(
+            {
+                "message": str(e)
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
